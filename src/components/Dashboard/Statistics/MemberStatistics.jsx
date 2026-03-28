@@ -38,10 +38,15 @@ const MemberStatistics = () => {
   const joinedClubs = data.joinedClubs ?? 0
   const regEvents = data.registeredEvents ?? 0
 
-  const upcomingEvents = data.upcomingEvents ?? [
-    { title: 'Spring Hackathon 2025', date: new Date(Date.now() + 7 * 86400000), club: 'Code & Build Society', isPaid: true, fee: 9.99 },
-    { title: 'Open Mic Night', date: new Date(Date.now() + 12 * 86400000), club: 'Creative Minds Studio', isPaid: false, fee: 0 },
-  ]
+
+  const { data: upcomingEvents = [] } = useQuery({
+    queryKey: ['events', user?.email],
+    enabled: !!user?.email,
+    queryFn: async () =>
+      (await axiosSecure.get(`/member-events/${user.email}`)).data,
+  })
+
+
 
   return (
     <div>
