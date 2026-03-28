@@ -1,0 +1,228 @@
+import Home from '../pages/Home/Home'
+import ErrorPage from '../pages/ErrorPage'
+import Login from '../pages/Login/Login'
+import SignUp from '../pages/SignUp/SignUp'
+import ClubDetails from '../pages/ClubDetails/ClubDetails'
+import PrivateRoute from './PrivateRoute'
+import DashboardLayout from '../layouts/DashboardLayout'
+import ManageUsers from '../pages/Dashboard/Admin/ManageUsers'
+import Profile from '../pages/Dashboard/Common/Profile'
+import Statistics from '../pages/Dashboard/Common/Statistics'
+import MainLayout from '../layouts/MainLayout'
+import { createBrowserRouter } from 'react-router'
+import PaymentSuccess from '../pages/Payment/PaymentSuccess'
+import EventDetails from '../pages/EventDetails/EventDetails'
+import EventPaymentSuccess from '../pages/Payment/EventPaymentSuccess'
+import AdminClubs from '../pages/Dashboard/Admin/AdminClubs'
+import Payments from '../pages/Dashboard/Admin/Payments'
+import AdminStatistics from '../components/Dashboard/Statistics/AdminStatistics'
+import Membership from '../pages/Dashboard/Manager/Membership'
+import ManageEvents from '../pages/Dashboard/Manager/ManageEvents'
+import Registrations from '../pages/Dashboard/Manager/Registrations'
+import MyClubsEvent from '../pages/Dashboard/Member/MyClubsEvent'
+import PaymentHistory from '../pages/Dashboard/Member/PaymentHistory'
+import RequestedFor from '../pages/Dashboard/Admin/RequestedFor'
+import ManagerClubs from '../pages/Dashboard/Manager/ManagerClubs'
+import MyClubs from '../pages/Dashboard/Member/MyClubs'
+import ManageClub from '../pages/Dashboard/Manager/ManageClub'
+import ManagerStatistics from '../components/Dashboard/Statistics/ManagerStatistics'
+import MemberStatistics from '../components/Dashboard/Statistics/MemberStatistics'
+import Events from '../components/Home/Events'
+import Clubs from '../components/Home/Clubs'
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+      },
+      {
+        path: '/clubs/:id',
+        element: <ClubDetails />,
+      },
+      {
+        path: '/events/:id',
+        element: <EventDetails />,
+      },
+      {
+        path: '/payment-success',
+        element: <PaymentSuccess />
+      },
+      {
+        path: '/event-payment-success',
+        element: <EventPaymentSuccess />
+      },
+      {
+        path: '/events',
+        element: <Events />
+      },
+      {
+        path: '/clubs',
+        element: <Clubs />
+      },
+
+    ],
+  },
+  { path: '/login', element: <Login /> },
+  { path: '/signup', element: <SignUp /> },
+  {
+    path: '/dashboard',
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <Statistics />
+          </PrivateRoute>
+        ),
+      },
+      // admin routes
+
+      {
+        path: 'admin-Statistics',
+        element: (
+          <PrivateRoute>
+            <AdminStatistics />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'Manage-Users',
+        element: (
+          <PrivateRoute>
+            <ManageUsers />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'clubs',
+        element: (
+          <PrivateRoute>
+            <AdminClubs />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'payments',
+        element: (
+          <PrivateRoute>
+            <Payments />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'user-request',
+        element: (
+          <PrivateRoute>
+            <RequestedFor />
+          </PrivateRoute>
+        )
+
+      },
+
+      // manager routes 
+      {
+        path: 'manager-statistics',
+        element: (
+          <PrivateRoute>
+            <ManagerStatistics />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'my-clubs',
+        element: (
+          <PrivateRoute>
+            <ManagerClubs />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'manage-club',
+        element: (
+          <PrivateRoute>
+            <ManageClub />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'member',
+        element: (
+          <PrivateRoute>
+            <Membership />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'events',
+        element: (
+          <PrivateRoute>
+            <ManageEvents />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'registrations',
+        element: <PrivateRoute>
+          <Registrations />
+        </PrivateRoute>,
+      },
+
+
+      // member routes 
+
+      {
+        path: 'member-statistics',
+        element: (
+          <PrivateRoute>
+            <MemberStatistics />
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: 'my-joined-clubs',
+        element: (
+          <PrivateRoute>
+            <MyClubs />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'my-events',
+        element: (
+          <PrivateRoute>
+            <MyClubsEvent />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'payment-history',
+        element: (
+          <PrivateRoute>
+            <PaymentHistory></PaymentHistory>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: 'profile',
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+
+    ],
+  },
+])

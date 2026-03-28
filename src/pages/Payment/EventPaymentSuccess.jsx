@@ -1,0 +1,1 @@
+export { EventPaymentSuccess as default } from './PaymentSuccess'
