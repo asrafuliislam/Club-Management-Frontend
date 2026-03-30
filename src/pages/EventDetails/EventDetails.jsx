@@ -10,6 +10,42 @@ import EventUpdateModal from '../../components/Modal/EventUpdateModal'
 import Container from '../../components/Shared/Container'
 import toast from 'react-hot-toast'
 
+/* ── Tag pill (same as ClubDetails) ── */
+const Tag = ({ children, color = 'indigo' }) => {
+  const map = {
+    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+    teal: 'bg-teal-50   text-teal-700   border-teal-100',
+    purple: 'bg-purple-50 text-purple-700 border-purple-100',
+    gray: 'bg-gray-100  text-gray-600   border-gray-200',
+    amber: 'bg-amber-50  text-amber-700  border-amber-100',
+    red: 'bg-red-50    text-red-600    border-red-100',
+  }
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${map[color]}`}>
+      {children}
+    </span>
+  )
+}
+/* ── Meta info card ── */
+const MetaCard = ({ icon, label, value }) => (
+  <div className="flex items-start gap-3 bg-gray-50 rounded-xl p-3">
+    <span className="text-lg mt-0.5">{icon}</span>
+    <div>
+      <p className="text-xs font-medium text-gray-500">{label}</p>
+      <p className="text-sm font-semibold text-gray-800">{value || '—'}</p>
+    </div>
+  </div>
+)
+/* ── Stat ── */
+const Stat = ({ icon, val, lbl }) => (
+  <div className="flex items-center gap-1.5">
+    <span className="text-base">{icon}</span>
+    <span className="text-sm font-bold text-gray-900">{val}</span>
+    <span className="text-sm text-gray-500">{lbl}</span>
+  </div>
+)
+
+
 const EventDetails = () => {
   const { id } = useParams()
   const axiosSecure = useAxiosSecure()
@@ -48,81 +84,156 @@ const EventDetails = () => {
   const isManager = event.manager?.email === user?.email
   const isFull = event.maxAttendees && regData?.count >= event.maxAttendees
 
-  // Event status
   const now = new Date()
   const eventDate = event.eventDate ? new Date(event.eventDate) : null
   const status = !eventDate ? null : eventDate > now ? 'upcoming' : 'ended'
 
-  // Progress
   const regCount = regData?.count || 0
   const maxAtt = event.maxAttendees || 0
   const fillPct = maxAtt ? Math.min((regCount / maxAtt) * 100, 100) : 0
 
   return (
-    <>
-      {/* Banner */}
-      <div className="w-full h-56 md:h-80 relative overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-700">
-        {event.bannerImage ? (
-          <img src={event.bannerImage} alt={event.title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-8xl opacity-30">🚀</div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gray-50 pb-20">
 
-        {/* Status pill overlay */}
-        <div className="absolute top-4 left-4 flex gap-2">
-          {event.isPaid ? (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/90 text-white backdrop-blur-sm">
-              💰 Paid · ${event.eventFee}
-            </span>
-          ) : (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-teal-500/90 text-white backdrop-blur-sm">
-              🎟️ Free
-            </span>
-          )}
-          {status === 'upcoming' && (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/90 text-white backdrop-blur-sm">
-              🕐 Upcoming
-            </span>
-          )}
-          {status === 'ended' && (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-500/90 text-white backdrop-blur-sm">
-              Ended
-            </span>
-          )}
+      {/* ══ BANNER ══ */}
+      <div className="relative w-full h-56 md:h-[280px] overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700">
+        {event.bannerImage
+          ? <img src={event.bannerImage} alt={event.title} className="w-full h-full object-cover" />
+          : <div className="w-full h-full flex items-center justify-center text-[8rem] opacity-20 select-none">🚀</div>
+        }
+        {/* dark gradient so text is readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+
+        {/* Event title pinned to bottom of banner */}
+        <div className="absolute bottom-0 inset-x-0 pb-5 px-4">
+          <Container>
+            <div className="max-w-5xl mx-auto">
+              {event.clubName && (
+                <p className="text-white/60 text-[10px] font-bold uppercase tracking-[.18em] mb-1">
+                  {event.clubName}
+                </p>
+              )}
+              <h1
+                className="text-2xl md:text-4xl font-black text-white leading-tight drop-shadow-lg"
+                style={{ fontFamily: "'Syne', sans-serif" }}
+              >
+                {event.title}
+              </h1>
+            </div>
+          </Container>
         </div>
       </div>
 
       <Container>
-        <div className="max-w-4xl mx-auto -mt-8 pb-16">
+        <div className="max-w-5xl mx-auto">
 
-          {/* Main Card */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-lg p-6 md:p-8 mb-6">
+          {/* ══ INFO BAR — overlaps banner ══ */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-xl px-6 py-5 -mt-5 mb-6 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center gap-5 justify-between">
+
+              {/* Tags + stats */}
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {event.isPaid
+                    ? <Tag color="purple">💰 ${event.eventFee} Entry</Tag>
+                    : <Tag color="teal">🎟️ Free Event</Tag>
+                  }
+                  {status === 'upcoming' && <Tag color="indigo">🕐 Upcoming</Tag>}
+                  {status === 'ended' && <Tag color="gray">Ended</Tag>}
+                  {event.location && <Tag color="gray">📍 {event.location}</Tag>}
+                  {isRegistered && <Tag color="teal">✓ Registered</Tag>}
+                  {isManager && <Tag color="purple">🧑‍💼 Organizer</Tag>}
+                  {isFull && !isRegistered && <Tag color="red">⚠️ Full</Tag>}
+                </div>
+                <div className="flex flex-wrap gap-5">
+                  <Stat icon="👥" val={`${regCount}${maxAtt ? ` / ${maxAtt}` : ''}`} lbl="registered" />
+                  {eventDate && (
+                    <Stat
+                      icon="📅"
+                      val={eventDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      lbl=""
+                    />
+                  )}
+                  {event.manager && <Stat icon="🧑‍💼" val={event.manager.name} lbl="" />}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="flex flex-wrap gap-3 flex-shrink-0">
+                {isManager ? (
+                  <button
+                    onClick={() => setIsUpdateEventOpen(true)}
+                    className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200"
+                  >
+                    ✎ Edit Event
+                  </button>
+                ) : (
+                  <button
+                    disabled={!!isRegistered || !!isFull}
+                    onClick={() => {
+                      if (isRegistered) return toast.error('Already registered')
+                      if (isFull) return toast.error('Event is full')
+                      setIsRegisterModalOpen(true)
+                    }}
+                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200
+                      ${isRegistered
+                        ? 'bg-teal-50 text-teal-700 border border-teal-200 cursor-default'
+                        : isFull
+                          ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                          : 'text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5'
+                      }`}
+                  >
+                    {isRegistered
+                      ? '✓ Registered'
+                      : isFull
+                        ? 'Event Full'
+                        : event.isPaid
+                          ? `Register — $${event.eventFee}`
+                          : 'Register Now — Free'
+                    }
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ══ MAIN CONTENT CARD ══ */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 mb-6">
             <div className="flex flex-col lg:flex-row gap-8">
 
-              {/* Left: Info */}
+              {/* Left: Description + meta */}
               <div className="flex-1 min-w-0">
-                <h1
-                  className="text-2xl md:text-3xl font-black text-gray-900 mb-4"
+                <h2
+                  className="text-lg font-black text-gray-900 mb-3"
                   style={{ fontFamily: "'Syne', sans-serif" }}
                 >
-                  {event.title}
-                </h1>
-
-                <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                  {event.description}
+                  About this Event
+                </h2>
+                <p className="text-gray-600 text-sm leading-[1.85] mb-6">
+                  {event.description || 'No description provided.'}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                  <MetaCard icon="📅" label="Date & Time" value={eventDate?.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })} />
+                  {eventDate && (
+                    <MetaCard
+                      icon="📅"
+                      label="Date & Time"
+                      value={eventDate.toLocaleString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    />
+                  )}
                   <MetaCard icon="📍" label="Location" value={event.location} />
                   <MetaCard icon="👥" label="Registered" value={`${regCount}${maxAtt ? ` / ${maxAtt}` : ''} attendees`} />
-                  {event.manager && (
-                    <MetaCard icon="🧑‍💼" label="Organizer" value={event.manager?.name} />
-                  )}
+                  {event.manager && <MetaCard icon="🧑‍💼" label="Organizer" value={event.manager.name} />}
                 </div>
 
-                {/* Progress bar — only if maxAttendees set */}
+                {/* Progress bar */}
                 {maxAtt > 0 && (
                   <div className="mb-4">
                     <div className="flex justify-between text-xs font-medium text-gray-500 mb-1.5">
@@ -141,7 +252,7 @@ const EventDetails = () => {
                   </div>
                 )}
 
-                {/* Club info strip */}
+                {/* Club strip */}
                 {event.clubName && (
                   <div className="flex items-center gap-3 pt-5 border-t border-gray-100">
                     {event.clubBanner && (
@@ -158,9 +269,9 @@ const EventDetails = () => {
                 )}
               </div>
 
-              {/* Right: CTA box */}
-              <div className="lg:w-60 flex-shrink-0">
-                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-5 text-center">
+              {/* Right: Fee card */}
+              <div className="lg:w-56 flex-shrink-0">
+                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-5 text-center sticky top-6">
                   <div className="text-3xl font-black text-indigo-700 mb-1">
                     {event.isPaid ? `$${event.eventFee}` : 'Free'}
                   </div>
@@ -168,39 +279,49 @@ const EventDetails = () => {
                     {event.isPaid ? 'Registration fee' : 'No fee required'}
                   </p>
 
-                  {!isManager ? (
-                    <Button
+                  {isManager ? (
+                    <button
+                      onClick={() => setIsUpdateEventOpen(true)}
+                      className="w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-indigo-700 border border-indigo-200 bg-white hover:bg-indigo-50 transition-all"
+                    >
+                      ✎ Edit Event
+                    </button>
+                  ) : (
+                    <button
                       disabled={!!isRegistered || !!isFull}
                       onClick={() => {
                         if (isRegistered) return toast.error('Already registered')
                         if (isFull) return toast.error('Event is full')
                         setIsRegisterModalOpen(true)
                       }}
-                      label={isRegistered ? '✓ Registered' : isFull ? 'Event Full' : 'Register Now'}
-                    />
-                  ) : (
-                    <Button
-                      label="✎ Edit Event"
-                      onClick={() => setIsUpdateEventOpen(true)}
-                      outline
-                    />
+                      className={`w-full px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200
+                        ${isRegistered
+                          ? 'bg-teal-50 text-teal-700 border border-teal-200 cursor-default'
+                          : isFull
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md hover:-translate-y-0.5'
+                        }`}
+                    >
+                      {isRegistered ? '✓ Registered' : isFull ? 'Event Full' : 'Register Now'}
+                    </button>
                   )}
 
                   <p className="text-xs text-gray-400 mt-3">
                     {isRegistered
                       ? 'You are registered ✓'
                       : isFull
-                      ? 'No spots remaining'
-                      : '🔒 Secure registration'}
+                        ? 'No spots remaining'
+                        : '🔒 Secure registration'}
                   </p>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
       </Container>
 
-      {/* Modals */}
+      {/* ══ MODALS ══ */}
       <RegistrationEventModal
         isOpen={isRegisterModalOpen}
         closeModal={() => setIsRegisterModalOpen(false)}
@@ -216,18 +337,8 @@ const EventDetails = () => {
           refetchEvents={refetchEvent}
         />
       )}
-    </>
+    </div>
   )
 }
-
-const MetaCard = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3 bg-gray-50 rounded-xl p-3">
-    <span className="text-lg mt-0.5">{icon}</span>
-    <div>
-      <p className="text-xs font-medium text-gray-500">{label}</p>
-      <p className="text-sm font-semibold text-gray-800">{value}</p>
-    </div>
-  </div>
-)
 
 export default EventDetails

@@ -7,6 +7,7 @@ import { TbFidgetSpinner } from 'react-icons/tb'
 import { useForm } from 'react-hook-form'
 import { saveOrUpdateUser } from '../../utils'
 import Logo from '../../components/Shared/Logo'
+import useAxiosSecure from '../../hooks/useAxiosSecure'
 
 const inputClass = `
   w-full px-4 py-3 rounded-xl border border-gray-200 bg-white
@@ -16,20 +17,23 @@ const inputClass = `
 `
 
 const Login = () => {
-  const { signIn, signInWithGoogle, loading, user, setLoading } = useAuth()
+  const { signIn, signInWithGoogle, loading, setLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state || '/'
 
+  const axiosSecure = useAxiosSecure()
+
+
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   if (loading) return <LoadingSpinner />
-  if (user) return <Navigate to={from} replace />
+
 
   const onSubmit = async (data) => {
     try {
       const { user } = await signIn(data.email, data.password)
-      await saveOrUpdateUser({
+      await saveOrUpdateUser(axiosSecure, {
         name: user?.displayName,
         email: user?.email,
         image: user?.photoURL,
@@ -44,7 +48,7 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       const { user } = await signInWithGoogle()
-      await saveOrUpdateUser({
+      await saveOrUpdateUser(axiosSecure, {
         name: user?.displayName,
         email: user?.email,
         image: user?.photoURL,

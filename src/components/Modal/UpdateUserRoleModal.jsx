@@ -1,14 +1,43 @@
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import useAxiosSecure from '../../hooks/useAxiosSecure'
 
 const roles = [
-  { value: 'member',  label: 'Member',  icon: '👤', desc: 'Can join clubs and register for events' },
+  { value: 'member', label: 'Member', icon: '👤', desc: 'Can join clubs and register for events' },
   { value: 'manager', label: 'Manager', icon: '🧑‍💼', desc: 'Can create and manage clubs & events' },
-  { value: 'admin',   label: 'Admin',   icon: '👑', desc: 'Full platform access and controls' },
+  { value: 'admin', label: 'Admin', icon: '👑', desc: 'Full platform access and controls' },
 ]
 
-const UpdateUserRoleModal = ({ isOpen, closeModal, role, onUpdate, userName }) => {
+const UpdateUserRoleModal = ({ isOpen, closeModal, role, email, userName,  }) => {
   const [updatedRole, setUpdatedRole] = useState(role || 'member')
+  const axiosSecure = useAxiosSecure()
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: updateRole, isPending } = useMutation({
+    mutationFn: async ({ email, role }) =>
+      await axiosSecure.patch('/update-role', { email, role }),
+    onSuccess: () => {
+      toast.success(`Role updated to "${updatedRole}" successfully!`)
+      // users list refetch করো
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      closeModal()
+    },
+    onError: (err) => {
+      console.error(err)
+      toast.error('Failed to update role!')
+    },
+  })
+
+  const handleUpdate = async () => {
+    if (updatedRole === role) {
+      toast('No changes made.', { icon: 'ℹ️' })
+      closeModal()
+      return
+    }
+    await updateRole({ email, role: updatedRole })
+  }
 
   return (
     <Dialog
@@ -30,6 +59,7 @@ const UpdateUserRoleModal = ({ isOpen, closeModal, role, onUpdate, userName }) =
           >
             Update Role
           </DialogTitle>
+
           {userName && (
             <p className="text-sm text-gray-500 mb-5">
               Changing role for <span className="font-semibold text-indigo-600">{userName}</span>
@@ -63,22 +93,32 @@ const UpdateUserRoleModal = ({ isOpen, closeModal, role, onUpdate, userName }) =
             ))}
           </div>
 
+
+
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => { onUpdate?.(updatedRole); closeModal() }}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200"
+              onClick={handleUpdate}
+              disabled={isPending}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              Update Role
+              {isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Updating...
+                </span>
+              ) : 'Update Role'}
             </button>
             <button
               type="button"
               onClick={closeModal}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-200"
+              disabled={isPending}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
           </div>
+
         </DialogPanel>
       </div>
     </Dialog>

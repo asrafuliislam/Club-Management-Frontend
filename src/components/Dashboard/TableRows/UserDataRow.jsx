@@ -7,7 +7,7 @@ const roleBadge = {
   member: 'bg-gray-100 text-gray-600',
 }
 
-const UserDataRow = ({ user, refetch }) => {
+const UserDataRow = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false)
   const closeModal = () => setIsOpen(false)
   const { email, role, image, name } = user
@@ -52,10 +52,11 @@ const UserDataRow = ({ user, refetch }) => {
         </button>
 
         <UpdateUserRoleModal
-          user={user}
-          refetch={refetch}
           isOpen={isOpen}
           closeModal={closeModal}
+          role={role}
+          email={email}
+          userName={name}
         />
       </td>
     </tr>

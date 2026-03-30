@@ -5,17 +5,13 @@ const ManagerDataRow = ({ request, refetch }) => {
   const axiosSecure = useAxiosSecure()
 
   const handleRoleUpdate = async () => {
-    try {
       await axiosSecure.patch('/update-role', {
         email: request?.email,
         role: 'manager',
       })
       toast.success('Role Updated!')
       refetch()
-    } catch (err) {
-      console.log(err)
-      toast.error('Request Failed!')
-    }
+    
   }
 
   return (

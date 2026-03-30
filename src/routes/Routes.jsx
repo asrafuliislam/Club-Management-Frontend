@@ -29,6 +29,8 @@ import ManagerStatistics from '../components/Dashboard/Statistics/ManagerStatist
 import MemberStatistics from '../components/Dashboard/Statistics/MemberStatistics'
 import Events from '../components/Home/Events'
 import Clubs from '../components/Home/Clubs'
+import AdminRoutes from './AdminRoutes'
+import ManagerRoutes from './ManagerRoutes'
 
 export const router = createBrowserRouter([
   {
@@ -91,7 +93,9 @@ export const router = createBrowserRouter([
         path: 'admin-Statistics',
         element: (
           <PrivateRoute>
-            <AdminStatistics />
+            <AdminRoutes>
+              <AdminStatistics />
+            </AdminRoutes>
           </PrivateRoute>
         ),
       },
@@ -99,7 +103,9 @@ export const router = createBrowserRouter([
         path: 'Manage-Users',
         element: (
           <PrivateRoute>
-            <ManageUsers />
+            <AdminRoutes>
+              <ManageUsers />
+            </AdminRoutes>
           </PrivateRoute>
         ),
       },
@@ -107,7 +113,9 @@ export const router = createBrowserRouter([
         path: 'clubs',
         element: (
           <PrivateRoute>
-            <AdminClubs />
+            <AdminRoutes>
+              <AdminClubs />
+            </AdminRoutes>
           </PrivateRoute>
         ),
       },
@@ -115,7 +123,9 @@ export const router = createBrowserRouter([
         path: 'payments',
         element: (
           <PrivateRoute>
-            <Payments />
+            <AdminRoutes>
+              <Payments />
+            </AdminRoutes>
           </PrivateRoute>
         ),
       },
@@ -123,7 +133,9 @@ export const router = createBrowserRouter([
         path: 'user-request',
         element: (
           <PrivateRoute>
-            <RequestedFor />
+            <AdminRoutes>
+              <RequestedFor />
+            </AdminRoutes>
           </PrivateRoute>
         )
 
@@ -134,7 +146,9 @@ export const router = createBrowserRouter([
         path: 'manager-statistics',
         element: (
           <PrivateRoute>
-            <ManagerStatistics />
+            <ManagerRoutes>
+              <ManagerStatistics />
+            </ManagerRoutes>
           </PrivateRoute>
         ),
       },
@@ -142,7 +156,9 @@ export const router = createBrowserRouter([
         path: 'my-clubs',
         element: (
           <PrivateRoute>
-            <ManagerClubs />
+            <ManagerRoutes>
+              <ManagerClubs />
+            </ManagerRoutes>
           </PrivateRoute>
         ),
       },
@@ -150,7 +166,9 @@ export const router = createBrowserRouter([
         path: 'manage-club',
         element: (
           <PrivateRoute>
-            <ManageClub />
+            <ManagerRoutes>
+              <ManageClub />
+            </ManagerRoutes>
           </PrivateRoute>
         ),
       },
@@ -158,7 +176,9 @@ export const router = createBrowserRouter([
         path: 'member',
         element: (
           <PrivateRoute>
-            <Membership />
+            <ManagerRoutes>
+              <Membership />
+            </ManagerRoutes>
           </PrivateRoute>
         ),
       },
@@ -166,14 +186,18 @@ export const router = createBrowserRouter([
         path: 'events',
         element: (
           <PrivateRoute>
-            <ManageEvents />
+            <ManagerRoutes>
+              <ManageEvents />
+            </ManagerRoutes>
           </PrivateRoute>
         ),
       },
       {
         path: 'registrations',
         element: <PrivateRoute>
-          <Registrations />
+          <ManagerRoutes>
+            <Registrations />
+          </ManagerRoutes>
         </PrivateRoute>,
       },
 

@@ -3,13 +3,13 @@ import axios from "axios";
 export const imageUpload = async imageData => {
     const fromData = new FormData()
     fromData.append('image', imageData)
-
     const imageKey = import.meta.env.VITE_IMGBB_API_KEY;
     const url = `https://api.imgbb.com/1/upload?key=${imageKey}`;
 
     const { data } = await axios.post(url,
         fromData
     )
+
 
     return data?.data?.display_url
 
@@ -40,14 +40,9 @@ export const imageUploadCloudinary = async imageData => {
 }
 
 
-
-
-export const saveOrUpdateUser = async userdata => {
-    const data = await axios.post(
-        `${import.meta.env.VITE_API_URL}/users`, userdata
-    )
+export const saveOrUpdateUser = async (axiosSecure, userdata) => {
+    const { data } = await axiosSecure.post('/users', userdata)
     return data
-
 }
 
 

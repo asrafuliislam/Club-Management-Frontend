@@ -33,12 +33,16 @@ const AddClubForm = () => {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
     } = useForm()
+
+    const membershipType = watch('membershipType')
 
     const onSubmit = async (data) => {
         try {
             const imageFile = data.image[0]
+            
             const imageUrl = await imageUpload(imageFile)
 
             const clubData = {
@@ -48,6 +52,9 @@ const AddClubForm = () => {
                 location: data.location,
                 membersLimit: Number(data.members),
                 image: imageUrl,
+                membershipType: data.membershipType,
+                // যদি Paid হয় তাহলে fee রাখো, Free হলে 0
+                membershipFee: data.membershipType === 'Paid' ? Number(data.membershipFee) : 0,
                 manager: {
                     name: user?.displayName,
                     email: user?.email,
@@ -59,6 +66,7 @@ const AddClubForm = () => {
 
             await addClub(clubData)
             reset()
+            setImagePreview(null)
         } catch (err) {
             console.log(err)
             toast.error('Something went wrong during submission!')
@@ -122,6 +130,8 @@ const AddClubForm = () => {
                                 >
                                     <option value="">Select a category</option>
                                     <option value="Sports">Sports</option>
+                                    <option value="Photography">Photography</option>
+                                    <option value="Literature">Literature</option>
                                     <option value="Arts">Arts</option>
                                     <option value="Music">Music</option>
                                     <option value="Tech">Tech</option>
@@ -166,6 +176,63 @@ const AddClubForm = () => {
                                     <span className="text-red-500 text-xs">Location is required</span>
                                 )}
                             </div>
+
+                            {/* ✅ Membership Type — Free / Paid */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-semibold text-gray-700">Membership Type</label>
+                                <div className="flex gap-3">
+                                    {['Free', 'Paid'].map((type) => (
+                                        <label
+                                            key={type}
+                                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border-2 cursor-pointer text-sm font-medium transition-all
+                                                ${membershipType === type
+                                                    ? type === 'Free'
+                                                        ? 'border-green-500 bg-green-50 text-green-700'
+                                                        : 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                                                    : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                                }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                value={type}
+                                                className="hidden"
+                                                {...register('membershipType', { required: true })}
+                                            />
+                                            <span>{type === 'Free' ? '🆓' : '💳'}</span>
+                                            {type}
+                                        </label>
+                                    ))}
+                                </div>
+                                {errors.membershipType && (
+                                    <span className="text-red-500 text-xs">Please select membership type</span>
+                                )}
+                            </div>
+
+                            {/* ✅ Membership Fee — শুধু Paid সিলেক্ট করলে দেখাবে */}
+                            {membershipType === 'Paid' && (
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-sm font-semibold text-gray-700">Membership Fee (৳)</label>
+                                    <input
+                                        {...register('membershipFee', {
+                                            required: membershipType === 'Paid',
+                                            min: { value: 1, message: 'Fee must be at least 1' },
+                                        })}
+                                        type="number"
+                                        min="1"
+                                        className={`w-full px-3.5 py-2.5 rounded-lg border text-sm text-gray-800 bg-white outline-none transition-all
+                                            ${errors.membershipFee
+                                                ? 'border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100'
+                                                : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-50'
+                                            }`}
+                                        placeholder="e.g. 500"
+                                    />
+                                    {errors.membershipFee && (
+                                        <span className="text-red-500 text-xs">
+                                            {errors.membershipFee.message || 'Membership fee is required'}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Right Column */}
@@ -211,15 +278,17 @@ const AddClubForm = () => {
                                         </>
                                     )}
                                     <input
-                                        {...register('image', { required: true })}
                                         type="file"
                                         accept="image/*"
                                         className="hidden"
-                                        onChange={(e) => {
-                                            if (e.target.files[0]) {
-                                                setImagePreview(URL.createObjectURL(e.target.files[0]))
+                                        {...register('image', {
+                                            required: true,
+                                            onChange: (e) => {
+                                                if (e.target.files[0]) {
+                                                    setImagePreview(URL.createObjectURL(e.target.files[0]))
+                                                }
                                             }
-                                        }}
+                                        })}
                                     />
                                 </label>
                                 {errors.image && (

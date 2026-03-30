@@ -10,14 +10,13 @@ import EventCreateModal from '../../components/Modal/EventCreateModal'
 import ClubUpdateModal from '../../components/Modal/ClubUpdateModal'
 import toast from 'react-hot-toast'
 
-/* ── Tiny reusable badge ── */
 const Tag = ({ children, color = 'indigo' }) => {
   const map = {
     indigo: 'bg-indigo-50 text-indigo-700 border-indigo-100',
-    teal:   'bg-teal-50   text-teal-700   border-teal-100',
+    teal: 'bg-teal-50   text-teal-700   border-teal-100',
     purple: 'bg-purple-50 text-purple-700 border-purple-100',
-    gray:   'bg-gray-100  text-gray-600   border-gray-200',
-    amber:  'bg-amber-50  text-amber-700  border-amber-100',
+    gray: 'bg-gray-100  text-gray-600   border-gray-200',
+    amber: 'bg-amber-50  text-amber-700  border-amber-100',
   }
 
   return (
@@ -27,12 +26,15 @@ const Tag = ({ children, color = 'indigo' }) => {
   )
 }
 
+
 const EventStatusBadge = ({ date }) => {
   const isPast = new Date(date) < new Date()
   return isPast
     ? <Tag color="gray">Ended</Tag>
     : <Tag color="indigo">🕐 Upcoming</Tag>
 }
+
+
 
 /* ── Main ── */
 const ClubDetails = () => {
@@ -41,8 +43,8 @@ const ClubDetails = () => {
   const { user } = useAuth()
 
   const [activeTab, setActiveTab] = useState('events')
-  const [isEventModalOpen, setIsEventModalOpen]   = useState(false)
-  const [isJoinModalOpen, setIsJoinModalOpen]     = useState(false)
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false)
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
   const { data: club = {}, isLoading, refetch: refetchClub } = useQuery({
@@ -50,11 +52,13 @@ const ClubDetails = () => {
     queryFn: async () => (await axiosSecure.get(`/clubs/${id}`)).data,
   })
 
+
   const { data: isMember } = useQuery({
     queryKey: ['is-member', user?.email, club._id],
     enabled: !!user?.email && !!club._id,
     queryFn: async () => (await axiosSecure.get(`/is-member?email=${user.email}&clubId=${club._id}`)).data,
   })
+
 
   const { data: memberData } = useQuery({
     queryKey: ['club-member-count', club._id],
@@ -65,13 +69,22 @@ const ClubDetails = () => {
   const { data: clubEvents = [] } = useQuery({
     queryKey: ['club-events', club._id],
     enabled: !!club._id,
-    queryFn: async () => (await axiosSecure.get(`/events?clubId=${club._id}`)).data,
+    queryFn: async () => (await axiosSecure.get(`/club-events?clubId=${club._id}`)).data,
   })
+
+  const { data: clubMembers = [] } = useQuery({
+    queryKey: ['club-members', club._id],
+    enabled: !!club._id,
+    queryFn: async () =>
+      (await axiosSecure.get(`/club-members/${club._id}`)).data,
+  })
+
 
   if (isLoading) return <LoadingSpinner />
 
   const { name, image, category, description, location, membersLimit, manager, membershipFee } = club
   const isManager = manager?.email === user?.email
+
   const isPaid = membershipFee && membershipFee > 0
 
   const handleJoinClick = () => {
@@ -80,12 +93,12 @@ const ClubDetails = () => {
   }
 
   const tabs = [
-    { key: 'events',  label: '📅 Events',  count: clubEvents.length },
-    { key: 'members', label: '👥 Members',  count: memberData?.count || 0 },
-    { key: 'about',   label: '📋 About' },
+    { key: 'events', label: '📅 Events', count: clubEvents.length },
+    { key: 'members', label: '👥 Members', count: memberData?.count || 0 },
+    { key: 'about', label: '📋 About' },
   ]
 
-  
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
 
@@ -127,15 +140,15 @@ const ClubDetails = () => {
                   <Tag color="indigo">🏷️ {category}</Tag>
                   {location && <Tag color="gray">📍 {location}</Tag>}
                   {isPaid
-                    ? <Tag color="purple">💰 ${membershipFee} / year</Tag>
+                    ? <Tag color="purple">💰 ${membershipFee} </Tag>
                     : <Tag color="teal">🎟️ Free to join</Tag>
                   }
-                  {isMember  && <Tag color="teal">✓ Member</Tag>}
+                  {isMember && <Tag color="teal">✓ Member</Tag>}
                   {isManager && <Tag color="purple">🧑‍💼 Manager</Tag>}
                 </div>
                 <div className="flex flex-wrap gap-5">
                   <Stat icon="👥" val={memberData?.count || 0} lbl="members" />
-                  <Stat icon="📅" val={clubEvents.length}       lbl="events" />
+                  <Stat icon="📅" val={clubEvents.length} lbl="events" />
                   {membersLimit && <Stat icon="🔢" val={membersLimit} lbl="member limit" />}
                   <Stat icon="⭐" val="4.8" lbl="rating" />
                 </div>
@@ -168,7 +181,7 @@ const ClubDetails = () => {
                         : 'text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5'
                       }`}
                   >
-                    {isMember ? '✓ Already a Member' : isPaid ? `Join Club — $${membershipFee}` : 'Join Club — Free'}
+                    {isMember ? '✓ Already a Member' : isPaid ? `Join Club — $${membershipFee}` : 'Join Club - Free'}
                   </button>
                 )}
               </div>
@@ -261,27 +274,19 @@ const ClubDetails = () => {
                 />
               )}
 
-              {/* Blurred placeholder rows for non-members */}
-              {!isMember && !isManager && (
-                <div className="relative">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="flex items-center gap-4 px-6 py-4 border-b border-gray-50">
-                      <div className="w-9 h-9 rounded-full bg-gray-200 animate-pulse flex-shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-3 bg-gray-200 rounded-full animate-pulse w-28" />
-                        <div className="h-2.5 bg-gray-100 rounded-full animate-pulse w-44" />
-                      </div>
-                    </div>
-                  ))}
-                  <div className="absolute inset-0 backdrop-blur-[3px] bg-white/70 flex items-center justify-center">
-                    <div className="text-center">
-                      <span className="text-3xl">🔒</span>
-                      <p className="text-sm font-semibold text-gray-600 mt-2">Members only</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {clubMembers.map((m) => (
+                <MemberRow
+                  key={m._id}
+                  image={m.memberImage}
+                  name={m.memberName}
+                  email={m.memberEmail}
+                  badge={<Tag color="teal">👤 Member</Tag>}
+                  joinDate={m.joinedAt || 'Member'}
+                />
+              ))}
             </div>
+
+
           )}
 
           {/* ══ TAB: ABOUT ══ */}
@@ -299,10 +304,10 @@ const ClubDetails = () => {
 
               {/* Info tiles */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <InfoTile icon="📍" label="Location"     value={location      || '—'} />
-                <InfoTile icon="🏷️" label="Category"    value={category      || '—'} />
-                <InfoTile icon="👥" label="Members"      value={memberData?.count || 0} color="indigo" />
-                <InfoTile icon="🔢" label="Member Limit" value={membersLimit  || 'Unlimited'} />
+                <InfoTile icon="📍" label="Location" value={location || '—'} />
+                <InfoTile icon="🏷️" label="Category" value={category || '—'} />
+                <InfoTile icon="👥" label="Members" value={memberData?.count || 0} color="indigo" />
+                <InfoTile icon="🔢" label="Member Limit" value={membersLimit || 'Unlimited'} />
               </div>
 
               {/* Manager card */}
@@ -348,7 +353,7 @@ const ClubDetails = () => {
 /* ── Event row inside Events tab ── */
 const EventRow = ({ event }) => {
   const d = new Date(event.eventDate)
-  const day   = d.toLocaleDateString('en-US', { day: '2-digit' })
+  const day = d.toLocaleDateString('en-US', { day: '2-digit' })
   const month = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
 
   return (

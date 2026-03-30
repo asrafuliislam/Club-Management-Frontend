@@ -4,7 +4,7 @@ import useRole from '../hooks/useRole'
 
 const ManagerRoutes = ({ children }) => {
 
-    const [role, isRoleLoading] = useRole()
+    const { role, isRoleLoading } = useRole()
 
     if (isRoleLoading) return <LoadingSpinner />
     if (role === 'manager') return children

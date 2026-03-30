@@ -1,6 +1,7 @@
+import axios from 'axios'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import axios from 'axios'
+import { getAuth } from 'firebase/auth'
 import useAuth from './useAuth'
 
 const axiosInstance = axios.create({
@@ -9,43 +10,54 @@ const axiosInstance = axios.create({
 })
 
 const useAxiosSecure = () => {
-  const { user, logOut, loading } = useAuth()
+  const { logOut, loading } = useAuth()
   const navigate = useNavigate()
+  const auth = getAuth()
 
   useEffect(() => {
-    if (!loading && user?.accessToken) {
-      // Add request interceptor
-      const requestInterceptor = axiosInstance.interceptors.request.use(
-        config => {
-          config.headers.Authorization = `Bearer ${user.accessToken}`
-          return config
-        }
-      )
+    if (loading) return
 
-      // Add response interceptor
-      const responseInterceptor = axiosInstance.interceptors.response.use(
-        res => res,
-        err => {
-          if (err?.response?.status === 401 || err?.response?.status === 403) {
-            logOut()
-              .then(() => {
-                console.log('Logged out successfully.')
-              })
-              .catch(console.error)
+    // 🔥 REQUEST INTERCEPTOR
+    const requestInterceptor = axiosInstance.interceptors.request.use(
+      async (config) => {
+        const user = auth.currentUser
+
+        if (user) {
+          const token = await user.getIdToken()
+          config.headers.Authorization = `Bearer ${token}`
+        }
+
+        return config
+      },
+      (error) => Promise.reject(error)
+    )
+
+
+    const responseInterceptor = axiosInstance.interceptors.response.use(
+      (res) => res,
+      async (err) => {
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          try {
+            await logOut()
             navigate('/login')
+          } catch (e) {
+            console.log(e)
           }
-          return Promise.reject(err)
         }
-      )
 
-      // Cleanup to prevent multiple interceptors on re-renders
-      return () => {
-        axiosInstance.interceptors.request.eject(requestInterceptor)
-        axiosInstance.interceptors.response.eject(responseInterceptor)
+        return Promise.reject(err)
       }
+    )
+
+    
+    return () => {
+      axiosInstance.interceptors.request.eject(requestInterceptor)
+      axiosInstance.interceptors.response.eject(responseInterceptor)
     }
-  }, [user, loading, logOut, navigate])
+  }, [loading, logOut, navigate, auth])
 
   return axiosInstance
 }
+
 export default useAxiosSecure
+
