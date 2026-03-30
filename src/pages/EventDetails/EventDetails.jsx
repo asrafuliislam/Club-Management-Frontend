@@ -74,10 +74,8 @@ const EventDetails = () => {
           ? <img src={event.bannerImage} alt={event.title} className="w-full h-full object-cover" />
           : <div className="w-full h-full flex items-center justify-center text-[8rem] opacity-20 select-none">🚀</div>
         }
-        {/* dark gradient so text is readable */}
+      
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-
-        {/* Event title pinned to bottom of banner */}
         <div className="absolute bottom-0 inset-x-0 pb-5 px-4">
           <Container>
             <div className="max-w-5xl mx-auto">
@@ -170,7 +168,6 @@ const EventDetails = () => {
             </div>
           </div>
 
-          {/* ══ MAIN CONTENT CARD ══ */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 mb-6">
             <div className="flex flex-col lg:flex-row gap-8">
 
