@@ -9,6 +9,11 @@ import JoinClubModal from '../../components/Modal/JoinClubModal'
 import EventCreateModal from '../../components/Modal/EventCreateModal'
 import ClubUpdateModal from '../../components/Modal/ClubUpdateModal'
 import toast from 'react-hot-toast'
+import EmptyTabState from '../../components/ReuseAble/EmptyTabState'
+import Stat from '../../components/ReuseAble/Stat'
+import InfoTile from '../../components/ReuseAble/InfoTile'
+import MemberRow from '../../components/ReuseAble/MemberRow'
+import EventRow from '../../components/ReuseAble/EventRow'
 
 const Tag = ({ children, color = 'indigo' }) => {
   const map = {
@@ -350,90 +355,6 @@ const ClubDetails = () => {
   )
 }
 
-/* ── Event row inside Events tab ── */
-const EventRow = ({ event }) => {
-  const d = new Date(event.eventDate)
-  const day = d.toLocaleDateString('en-US', { day: '2-digit' })
-  const month = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
 
-  return (
-    <Link
-      to={`/events/${event._id}`}
-      className="flex items-center gap-4 px-6 py-4 border-b border-gray-50 hover:bg-indigo-50/40 transition-colors duration-150 group"
-    >
-      {/* Mini date badge */}
-      <div className="w-12 h-14 rounded-xl bg-gradient-to-b from-indigo-600 to-indigo-800 flex flex-col items-center justify-center text-white shadow-md shadow-indigo-100 flex-shrink-0">
-        <span className="text-base font-black leading-none">{day}</span>
-        <span className="text-[9px] font-bold opacity-75 tracking-wider mt-0.5">{month}</span>
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <p className="font-bold text-sm text-gray-900 group-hover:text-indigo-700 transition-colors truncate">
-          {event.title}
-        </p>
-        <div className="flex flex-wrap items-center gap-2 mt-1.5">
-          {event.location && (
-            <span className="text-xs text-gray-500">📍 {event.location}</span>
-          )}
-          {event.isPaid
-            ? <Tag color="purple">💰 ${event.eventFee}</Tag>
-            : <Tag color="teal">🎟️ Free</Tag>
-          }
-          <EventStatusBadge date={event.eventDate} />
-        </div>
-      </div>
-
-      {/* Chevron */}
-      <svg className="w-4 h-4 text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all duration-150 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
-    </Link>
-  )
-}
-
-/* ── Member row ── */
-const MemberRow = ({ image, name, email, badge, joinDate }) => (
-  <div className="flex items-center gap-4 px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
-    <img
-      src={image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff`}
-      alt={name}
-      className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow flex-shrink-0"
-    />
-    <div className="flex-1 min-w-0">
-      <p className="text-sm font-semibold text-gray-900 truncate">{name}</p>
-      <p className="text-xs text-gray-500 truncate">{email}</p>
-    </div>
-    {joinDate && <span className="text-xs text-gray-400 hidden sm:block">{joinDate}</span>}
-    {badge}
-  </div>
-)
-
-/* ── Info tile (About tab) ── */
-const InfoTile = ({ icon, label, value, color = 'gray' }) => (
-  <div className={`rounded-2xl p-5 border border-gray-100 ${color === 'indigo' ? 'bg-indigo-50' : 'bg-white'}`}>
-    <div className="text-2xl mb-2.5">{icon}</div>
-    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{label}</div>
-    <div className="text-sm font-bold text-gray-900">{value}</div>
-  </div>
-)
-
-/* ── Stat pill ── */
-const Stat = ({ icon, val, lbl }) => (
-  <div className="flex items-center gap-1.5">
-    <span className="text-base">{icon}</span>
-    <span className="text-sm font-bold text-gray-900">{val}</span>
-    <span className="text-sm text-gray-500">{lbl}</span>
-  </div>
-)
-
-/* ── Empty tab state ── */
-const EmptyTabState = ({ icon, title, desc }) => (
-  <div className="flex flex-col items-center py-16 text-center px-6">
-    <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl mb-4">{icon}</div>
-    <p className="font-semibold text-gray-700">{title}</p>
-    <p className="text-sm text-gray-400 mt-1 max-w-xs">{desc}</p>
-  </div>
-)
 
 export default ClubDetails

@@ -9,41 +9,14 @@ import RegistrationEventModal from '../../components/Modal/RegistrationEventModa
 import EventUpdateModal from '../../components/Modal/EventUpdateModal'
 import Container from '../../components/Shared/Container'
 import toast from 'react-hot-toast'
+import Stat from '../../components/ReuseAble/Stat'
+import Tag from '../../components/ReuseAble/Tag'
+import MetaCard from '../../components/ReuseAble/MetaCard'
 
 /* ── Tag pill (same as ClubDetails) ── */
-const Tag = ({ children, color = 'indigo' }) => {
-  const map = {
-    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-100',
-    teal: 'bg-teal-50   text-teal-700   border-teal-100',
-    purple: 'bg-purple-50 text-purple-700 border-purple-100',
-    gray: 'bg-gray-100  text-gray-600   border-gray-200',
-    amber: 'bg-amber-50  text-amber-700  border-amber-100',
-    red: 'bg-red-50    text-red-600    border-red-100',
-  }
-  return (
-    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${map[color]}`}>
-      {children}
-    </span>
-  )
-}
+
 /* ── Meta info card ── */
-const MetaCard = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3 bg-gray-50 rounded-xl p-3">
-    <span className="text-lg mt-0.5">{icon}</span>
-    <div>
-      <p className="text-xs font-medium text-gray-500">{label}</p>
-      <p className="text-sm font-semibold text-gray-800">{value || '—'}</p>
-    </div>
-  </div>
-)
-/* ── Stat ── */
-const Stat = ({ icon, val, lbl }) => (
-  <div className="flex items-center gap-1.5">
-    <span className="text-base">{icon}</span>
-    <span className="text-sm font-bold text-gray-900">{val}</span>
-    <span className="text-sm text-gray-500">{lbl}</span>
-  </div>
-)
+
 
 
 const EventDetails = () => {
