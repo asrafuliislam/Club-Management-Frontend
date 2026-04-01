@@ -45,8 +45,8 @@ const RequestManagement = () => {
                 <button
                     onClick={() => setActiveTab('manager')}
                     className={`px-4 py-2 rounded ${activeTab === 'manager'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200'
                         }`}
                 >
                     Manager Requests ({managerRequests.length})
@@ -55,8 +55,8 @@ const RequestManagement = () => {
                 <button
                     onClick={() => setActiveTab('admin')}
                     className={`px-4 py-2 rounded ${activeTab === 'admin'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200'
                         }`}
                 >
                     Admin Requests ({adminRequests.length})
@@ -64,35 +64,23 @@ const RequestManagement = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white shadow rounded-lg p-4">
-                {requests.length === 0 ? (
-                    <p className="text-center text-gray-500">
-                        No pending requests 🚀
-                    </p>
-                ) : (
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="border-b">
-                                <th className="py-2">Email</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {requests.map((req) => (
-                                <RequestRow
-                                    key={req._id}
-                                    request={req}
-                                    type={activeTab}
-                                    refetch={refetch}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-            </div>
+            <table className="w-full text-sm">
+                <thead>
+                    <tr className="border-b border-gray-100">
+                        <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Member</th>
+                        <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Type</th>
+                        <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Status</th>
+                        <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 uppercase tracking-wide">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {requests.map(r =>
+                        <RequestRow
+                            key={r._id}
+                            request={r} type="club"
+                            refetch={refetch} />)}
+                </tbody>
+            </table>
         </div>
     )
 }
