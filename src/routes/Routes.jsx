@@ -21,7 +21,6 @@ import ManageEvents from '../pages/Dashboard/Manager/ManageEvents'
 import Registrations from '../pages/Dashboard/Manager/Registrations'
 import MyClubsEvent from '../pages/Dashboard/Member/MyClubsEvent'
 import PaymentHistory from '../pages/Dashboard/Member/PaymentHistory'
-import RequestedFor from '../pages/Dashboard/Admin/RequestedFor'
 import ManagerClubs from '../pages/Dashboard/Manager/ManagerClubs'
 import MyClubs from '../pages/Dashboard/Member/MyClubs'
 import ManageClub from '../pages/Dashboard/Manager/ManageClub'
@@ -31,6 +30,7 @@ import Events from '../components/Home/Events'
 import Clubs from '../components/Home/Clubs'
 import AdminRoutes from './AdminRoutes'
 import ManagerRoutes from './ManagerRoutes'
+import RequestManagement from '../pages/Dashboard/Admin/RequestManagement'
 
 export const router = createBrowserRouter([
   {
@@ -134,7 +134,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AdminRoutes>
-              <RequestedFor />
+              <RequestManagement />
             </AdminRoutes>
           </PrivateRoute>
         )
