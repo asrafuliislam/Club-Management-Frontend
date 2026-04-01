@@ -2,7 +2,6 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure'
 import toast from 'react-hot-toast'
 import Swal from 'sweetalert2'
 
-/* ══════════════════ RequestRow ══════════════════ */
 const RequestRow = ({ request, type, refetch }) => {
   const axiosSecure = useAxiosSecure()
 
@@ -64,7 +63,7 @@ const RequestRow = ({ request, type, refetch }) => {
         </div>
       </td>
 
-      {/* Role requested */}
+      {/* Role */}
       <td className="px-5 py-3.5">
         {type === 'manager' ? (
           <span className="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
@@ -106,5 +105,4 @@ const RequestRow = ({ request, type, refetch }) => {
   )
 }
 
-
-export default RequestRow;
+export default RequestRow
