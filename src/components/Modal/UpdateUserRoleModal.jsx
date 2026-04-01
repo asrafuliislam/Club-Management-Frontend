@@ -1,27 +1,25 @@
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import useAxiosSecure from '../../hooks/useAxiosSecure'
 
 const roles = [
-  { value: 'member', label: 'Member', icon: '👤', desc: 'Can join clubs and register for events' },
+  { value: 'member',  label: 'Member',  icon: '👤',    desc: 'Can join clubs and register for events' },
   { value: 'manager', label: 'Manager', icon: '🧑‍💼', desc: 'Can create and manage clubs & events' },
-  { value: 'admin', label: 'Admin', icon: '👑', desc: 'Full platform access and controls' },
+  { value: 'admin',   label: 'Admin',   icon: '👑',    desc: 'Full platform access and controls' },
 ]
 
-const UpdateUserRoleModal = ({ isOpen, closeModal, role, email, userName,  }) => {
+const UpdateUserRoleModal = ({ isOpen, closeModal, role, email, userName, refetch }) => {
   const [updatedRole, setUpdatedRole] = useState(role || 'member')
   const axiosSecure = useAxiosSecure()
-  const queryClient = useQueryClient()
 
   const { mutateAsync: updateRole, isPending } = useMutation({
     mutationFn: async ({ email, role }) =>
       await axiosSecure.patch('/update-role', { email, role }),
     onSuccess: () => {
       toast.success(`Role updated to "${updatedRole}" successfully!`)
-      // users list refetch করো
-      queryClient.invalidateQueries({ queryKey: ['users'] })
+      refetch()   // ← parent এর refetch সরাসরি call করে UI instant update
       closeModal()
     },
     onError: (err) => {
@@ -92,8 +90,6 @@ const UpdateUserRoleModal = ({ isOpen, closeModal, role, email, userName,  }) =>
               </button>
             ))}
           </div>
-
-
 
           <div className="flex gap-3">
             <button
