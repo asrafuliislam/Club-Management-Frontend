@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import useAuth from '../../../hooks/useAuth'
 import useRole from '../../../hooks/useRole'
-import coverImg from '../../../assets/images/cover.jpg'
 import toast from 'react-hot-toast'
 import { imageUpload } from '../../../utils'
 import LoadingSpinner from '../../../components/Shared/LoadingSpinner'
 import BecomeManagerModal from '../../../components/Modal/BecomeManagerModal'
 import BecomeAdminModal from '../../../components/Modal/BecomeAdminModal'
+import getGradient from '../../../components/Shared/getGradient'
 
 const roleMeta = {
   admin: { label: 'Admin', bg: 'bg-purple-50 text-purple-700 border border-purple-100' },
@@ -59,10 +59,11 @@ const Profile = () => {
       {/* Profile Card */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-        {/* Cover Image */}
-        <div className="relative h-44 overflow-hidden">
-          <img src={coverImg} className="w-full h-full object-cover" alt="cover" />
-          {/* Gradient overlay */}
+        <div
+          className="relative h-44 overflow-hidden"
+          style={{ background: getGradient(user?.displayName || user?.email) }}
+        >
+          {/* Gradient overlay সরিয়ে দিন অথবা রাখুন */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30" />
         </div>
 
