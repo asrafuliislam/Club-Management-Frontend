@@ -1,7 +1,3 @@
-
-
-
-import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import useAxiosSecure from '../../hooks/useAxiosSecure'
@@ -23,7 +19,6 @@ const dateGradients = [
 
 const UpcomingEvents = () => {
   const axiosSecure = useAxiosSecure()
-  const [sort, setSort] = useState('newest')
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['upcoming-events'],
@@ -33,16 +28,9 @@ const UpcomingEvents = () => {
     },
   })
 
-  const upcomingEvents = useMemo(() => {
-    return events
-      .filter((e) => getEventStatus(e.eventDate) === 'upcoming')
-      .sort((a, b) => {
-        const da = new Date(a.eventDate)
-        const db = new Date(b.eventDate)
-        return sort === 'newest' ? db - da : da - db
-      })
-      .slice(0, 3)
-  }, [events, sort])
+  const upcomingEvents = events
+    .filter((e) => getEventStatus(e.eventDate) === 'upcoming')
+    .slice(0, 3)
 
   if (isLoading) return <LoadingSpinner />
 
@@ -56,25 +44,12 @@ const UpcomingEvents = () => {
           </h2>
           <p className="text-gray-500 mt-1 text-sm">Don't miss what's happening around you</p>
         </div>
-
-        <div className="flex items-center gap-3">
-          {/* Sort */}
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="px-4 py-2 text-sm rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all text-gray-700 font-medium cursor-pointer"
-          >
-            <option value="newest">📅 Newest first</option>
-            <option value="oldest">📅 Oldest first</option>
-          </select>
-
-          <Link
-            to="/events"
-            className="text-indigo-600 text-sm font-semibold hover:text-indigo-700 flex items-center gap-1 transition-colors"
-          >
-            See all events →
-          </Link>
-        </div>
+        <Link
+          to="/events"
+          className="text-indigo-600 text-sm font-semibold hover:text-indigo-700 flex items-center gap-1 transition-colors"
+        >
+          See all events →
+        </Link>
       </div>
 
       {/* Events Grid */}
@@ -129,6 +104,7 @@ const UpcomingEventCard = ({ event, gradientIndex }) => {
           {title}
         </h3>
         <div className="flex items-center flex-wrap gap-1.5">
+          {/* Fee tag */}
           {isPaid ? (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700">
               💰 ৳{eventFee}
@@ -138,9 +114,11 @@ const UpcomingEventCard = ({ event, gradientIndex }) => {
               🎟️ Free
             </span>
           )}
+          {/* Status */}
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700">
             🕐 Upcoming
           </span>
+          {/* Location */}
           {location && (
             <span className="text-[10px] text-gray-400 flex items-center gap-0.5 w-full mt-1">
               📍 {location}
