@@ -43,12 +43,18 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/clubs/:id',
-        element: <ClubDetails />,
+        path: '/events/:id',
+        element: <PrivateRoute>
+          <EventDetails />
+        </PrivateRoute>,
       },
       {
-        path: '/events/:id',
-        element: <EventDetails />,
+        path: '/clubs/:id',
+        element: (
+          <PrivateRoute>
+            <ClubDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: '/payment-success',

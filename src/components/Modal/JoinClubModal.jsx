@@ -8,8 +8,7 @@ const JoinClubModal = ({ closeModal, isOpen, club }) => {
 
   if (!club) return null
 
-  const { _id, name, category, image, manager } = club
-  const membershipPrice = 10
+  const { _id, name, category, image, manager ,membershipFee} = club
 
   const handlePayment = async () => {
     if (!user?.email || !user?.displayName) {
@@ -23,7 +22,7 @@ const JoinClubModal = ({ closeModal, isOpen, club }) => {
       category,
       image,
       manager,
-      price: membershipPrice,
+      price : membershipFee,
       description: `Membership for ${name}`,
       member: {
         name: user.displayName,
@@ -74,7 +73,7 @@ const JoinClubModal = ({ closeModal, isOpen, club }) => {
             <InfoRow label="Email" value={user?.email} />
             <div className="pt-2 mt-2 border-t border-indigo-100 flex justify-between">
               <span className="text-sm font-semibold text-gray-700">Membership Fee</span>
-              <span className="text-lg font-black text-indigo-700">${membershipPrice}</span>
+              <span className="text-lg font-black text-indigo-700">${membershipFee}</span>
             </div>
           </div>
 
