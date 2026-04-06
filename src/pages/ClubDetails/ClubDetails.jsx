@@ -41,6 +41,8 @@ const EventStatusBadge = ({ date }) => {
 
 
 
+
+
 /* ── Main ── */
 const ClubDetails = () => {
   const { id } = useParams()
