@@ -12,7 +12,7 @@ const useAxiosSecure = () => {
   // ✅ axios instance only created once
   const axiosInstance = useMemo(() => {
     return axios.create({
-      baseURL: import.meta.env.VITE_API_URL,
+      baseURL: import.meta.env.VITE_API_URL + '/api',
       withCredentials: true,
     })
   }, [])
@@ -49,7 +49,7 @@ const useAxiosSecure = () => {
       async (err) => {
         const status = err?.response?.status
 
-        if (status === 401 || status === 403) {
+        if (status === 401) {
           try {
             await logOut()
             navigate('/login', { replace: true })
@@ -57,7 +57,6 @@ const useAxiosSecure = () => {
             console.log('Logout error:', e)
           }
         }
-
         return Promise.reject(err)
       }
     )
