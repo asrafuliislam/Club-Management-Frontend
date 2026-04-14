@@ -48,7 +48,7 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       const { user } = await signInWithGoogle()
-      await saveOrUpdateUser(axiosSecure, {
+      await saveOrUpdateUser({
         name: user?.displayName,
         email: user?.email,
         image: user?.photoURL,

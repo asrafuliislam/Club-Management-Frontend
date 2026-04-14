@@ -41,9 +41,9 @@ export const imageUploadCloudinary = async imageData => {
 
 
 
-export const saveOrUpdateUser = async (userdata) => {
-    const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users`,
+export const saveOrUpdateUser = async (axiosSecure, userdata) => {
+    const { data } = await axiosSecure.post(
+        '/users',
         userdata
     )
     return data

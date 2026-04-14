@@ -30,7 +30,7 @@ const SignUp = () => {
     try {
       const imageUrl = await imageUpload(imageFile)
       const result = await createUser(email, password)
-      await saveOrUpdateUser(axiosSecure,{ name, email, image: imageUrl })
+      await saveOrUpdateUser(axiosSecure, { name, email, image: imageUrl })
       await updateUserProfile(name, imageUrl)
       console.log(result)
       navigate(from, { replace: true })
@@ -44,7 +44,7 @@ const SignUp = () => {
   const handleGoogleSignIn = async () => {
     try {
       const { user } = await signInWithGoogle()
-      await saveOrUpdateUser(axiosSecure,{
+      await saveOrUpdateUser({
         name: user?.displayName,
         email: user?.email,
         image: user?.photoURL,
@@ -183,7 +183,7 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none mt-2"
+              className="w-full py-3 hover:cursor-alias rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none mt-2"
             >
               {loading ? <TbFidgetSpinner className="animate-spin mx-auto text-lg" /> : 'Create Account'}
             </button>

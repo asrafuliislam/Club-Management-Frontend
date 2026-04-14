@@ -42,7 +42,7 @@ const AddClubForm = () => {
     const onSubmit = async (data) => {
         try {
             const imageFile = data.image[0]
-            
+
             const imageUrl = await imageUpload(imageFile)
 
             const clubData = {
@@ -136,6 +136,7 @@ const AddClubForm = () => {
                                     <option value="Music">Music</option>
                                     <option value="Tech">Tech</option>
                                     <option value="Social">Social</option>
+                                    <option value="Hiking">Hiking</option>
                                 </select>
                                 {errors.category && (
                                     <span className="text-red-500 text-xs">Category is required</span>

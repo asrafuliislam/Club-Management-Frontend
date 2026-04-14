@@ -1,4 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router'
+import Tag from './Tag';
+import EventStatusBadge from './EventStatusBadge';
 
 const EventRow = ({ event }) => {
 
@@ -6,7 +9,7 @@ const EventRow = ({ event }) => {
     const day = d.toLocaleDateString('en-US', { day: '2-digit' })
     const month = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
 
-    
+
     return (
         <Link
             to={`/events/${event._id}`}

@@ -14,30 +14,10 @@ import Stat from '../../components/ReuseAble/Stat'
 import InfoTile from '../../components/ReuseAble/InfoTile'
 import MemberRow from '../../components/ReuseAble/MemberRow'
 import EventRow from '../../components/ReuseAble/EventRow'
-
-const Tag = ({ children, color = 'indigo' }) => {
-  const map = {
-    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-100',
-    teal: 'bg-teal-50   text-teal-700   border-teal-100',
-    purple: 'bg-purple-50 text-purple-700 border-purple-100',
-    gray: 'bg-gray-100  text-gray-600   border-gray-200',
-    amber: 'bg-amber-50  text-amber-700  border-amber-100',
-  }
-
-  return (
-    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${map[color]}`}>
-      {children}
-    </span>
-  )
-}
+import Tag from '../../components/ReuseAble/Tag'
 
 
-const EventStatusBadge = ({ date }) => {
-  const isPast = new Date(date) < new Date()
-  return isPast
-    ? <Tag color="gray">Ended</Tag>
-    : <Tag color="indigo">🕐 Upcoming</Tag>
-}
+
 
 
 
