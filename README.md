@@ -1,16 +1,57 @@
-# React + Vite
+# 🏆 ClubSphere – Membership & Event Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Project Overview
+ClubSphere is a full-stack MERN web application that allows users to discover, join, and manage local clubs and events. It supports role-based dashboards for Admin, Club Managers, and Members with secure authentication and payment integration.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌐 Live Project Links
 
-## React Compiler
+- 🔗 Frontend (Live): https://club-management-frontend-beta.vercel.app
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Key Features
 
-## Expanding the ESLint configuration
+### 👤 Authentication
+- Firebase Authentication (Email/Password + Google Login)
+- JWT-based backend security
+- Role-based access (Admin, Club Manager, Member)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🏢 Club Management
+- Create, update, delete clubs
+- Approve/reject clubs (Admin)
+- Category-based filtering
+
+### 🎉 Event Management
+- Create and manage events
+- Event registration system
+- Paid & free events support
+
+### 💳 Payment System
+- Stripe payment integration
+- Membership fee handling
+- Payment history tracking
+
+### 📊 Dashboards
+- Admin dashboard (users, clubs, payments stats)
+- Club Manager dashboard (clubs & events management)
+- Member dashboard (joined clubs & events)
+
+---
+
+## 🧰 Tech Stack
+
+### Frontend:
+- React.js
+- Tailwind CSS / DaisyUI
+- TanStack Query
+- React Hook Form
+- Firebase Auth
+- Framer Motion
+
+### Backend:
+- Node.js
+- Express.js
+- MongoDB
+- JWT Authentication
+- Stripe API
